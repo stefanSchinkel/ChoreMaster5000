@@ -26,6 +26,6 @@ def create_app():
     log_view = LoggerAPI.as_view('chores')
 
     app.add_url_rule('/chores/', view_func=log_view, methods=['GET'])
-    app.add_url_rule('/chores/<int:id>', view_func=log_view,methods=['POST'])
+    app.add_url_rule('/chores/<int:_id>', view_func=log_view,methods=['POST'])
 
     return app

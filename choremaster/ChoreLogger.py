@@ -18,6 +18,19 @@ class LoggerAPI(MethodView):
 
 
     def post(self, _id):
+        db = _db.get_db()
+        res = db.execute("SELECT * FROM log WHERE day = date('now') and chore_id = ?", (_id,)).fetchone()
+        if not res:
+            suc = db.execute(
+                "INSERT INTO log (day, chore_id, counter) VALUES (date('now'),  ?, ?)",(_id, 1)
+            )
+        else:
+            cnt = res['counter']
+            # not sure why safe query construction fails
+            q = "UPDATE log SET counter=%d WHERE day=date('now')  AND  chore_id = %s" % (cnt+1, _id)
+            suc = db.execute(q)
+        db.commit()
+
         msg = "registerd chored {}".format(_id)
         return(msg)
 
