@@ -11,5 +11,5 @@ CREATE TABLE IF NOT EXISTS log (
     counter integer,
     PRIMARY KEY (day, chore_id),
     FOREIGN KEY(chore_id) REFERENCES chores(chore_id)
-    
+
 );
