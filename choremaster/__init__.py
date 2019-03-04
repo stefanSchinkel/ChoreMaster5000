@@ -5,6 +5,7 @@ import os
 from flask import Flask
 
 from .ChoreLogger import LoggerAPI
+from .StatsAPI import StatsAPI
 
 def create_app():
     """Flask app factory."""
@@ -24,8 +25,12 @@ def create_app():
 
     # hookup endpoints
     log_view = LoggerAPI.as_view('chores')
-
+    stat_view = StatsAPI.as_view('stats')
     app.add_url_rule('/chores/', view_func=log_view, methods=['GET'])
-    app.add_url_rule('/chores/<int:_id>', view_func=log_view,methods=['POST'])
+    app.add_url_rule('/chores/<int:_id>', view_func=log_view, methods=['POST'])
+
+    app.add_url_rule(
+        "/chores/<int:_id>/stats/<int:year>/", view_func=stat_view, methods=['GET']
+    )
 
     return app
