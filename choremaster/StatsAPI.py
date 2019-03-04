@@ -17,6 +17,10 @@ QS_CHORE = "SELECT * FROM chores WHERE chore_id = ?"
 class StatsAPI(MethodView):
 
     def get(self, _id, year=None,):
+        if not year:
+            now = datetime.datetime.now()
+            year = now.year
+
         s_year = str(year)
 
         db = _db.get_db()
