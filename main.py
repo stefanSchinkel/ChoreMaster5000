@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 from choremaster import create_app
 from choremaster.config import config
 
