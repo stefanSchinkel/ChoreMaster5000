@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Funkenlights</title>
+    <title>ChoreMaster5000</title>
     <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
     <link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet">
     <link href="{{ url_for('static', filename='css/cabin.css') }}" rel="stylesheet">
@@ -50,7 +50,7 @@
 
                 msg = "Registered chore";
                 $('#notifier').fadeTo('fast', 1);
-                $('#notifier').text(msg).fadeTo( 3000, 0 );
+                $('#notifier').text(msg).fadeTo( 1000, 0 );
             },
             error: function(xhr, textStatus, error){
                 console.log(error);
