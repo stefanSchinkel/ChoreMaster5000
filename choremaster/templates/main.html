@@ -40,16 +40,22 @@
 <body>
 
 <script type="text/javascript">
+    Flash = {}
+    Flash.success = function(msg, time){
+        console.log("message logged")
+        time = time || 1000;
+
+        $('#flash').text(msg).fadeIn('slow', function() {
+            $(this).delay(time).fadeOut('slow');
+        });
+      };
     function cb(id) {
          url = "/chores/" + id
          $.ajax({
             type:'POST',
             url: url,
             success:function(){
-
-                msg = "Registered chore";
-                $('#notifier').fadeTo('fast', 1);
-                $('#notifier').text(msg).fadeTo( 1000, 0 );
+                Flash.success("Chore logged");
             },
             error: function(xhr, textStatus, error){
                 console.log(error);
@@ -58,10 +64,9 @@
     }
 
 </script>
-
  <!-- <div class="container"> -->
     <div class="container">
-
+      <div id="flash">Foo foo</div>
     <h1 class="logo">ChoreMaster 5000</h1>
 
       <div class="starter-template">

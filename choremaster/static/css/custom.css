@@ -40,3 +40,22 @@ h4 {
 }
 
 
+#flash {
+  width: 50%;
+  margin: 0 auto;
+  right: 0;
+  left: 0;
+  position: fixed;
+  height: 50px;
+  padding: 10px 20px;
+  border-radius: 0 0 4px 4px;
+  color: #856404;
+  background-color: #fff3cd;
+  display: none;
+  overflow: hidden;
+}
+.visible {
+  height: 50px;
+}
+
+
