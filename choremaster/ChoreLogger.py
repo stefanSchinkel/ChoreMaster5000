@@ -1,12 +1,26 @@
-from flask import  render_template
+from flask import  render_template, jsonify
 from flask.views import MethodView
 
 from . import db as _db
+
+QS_DAY = "SELECT * FROM log WHERE day = date('now') and chore_id = ?"
+QS_INSERT = "INSERT INTO log (day, chore_id, counter) VALUES (date('now'),  ?, ?)"
+# not sure why safe query construction fails
+QS_UPDATE = "UPDATE log SET counter=%d WHERE day=date('now')  AND  chore_id = %s"
+
+
 class LoggerAPI(MethodView):
 
-    def get(self):
-        chores = []
+    def get(self, _id=None):
+
+        # for ajax only
         db = _db.get_db()
+        if _id:
+            res = db.execute(QS_DAY, (_id,)).fetchone()
+            return jsonify({"count": res['counter']})
+
+        # render actual page
+        chores = []
         res = db.execute('SELECT * FROM chores').fetchall()
         for item in res:
             chores.append({
@@ -19,18 +33,14 @@ class LoggerAPI(MethodView):
 
     def post(self, _id):
         db = _db.get_db()
-        res = db.execute("SELECT * FROM log WHERE day = date('now') and chore_id = ?", (_id,)).fetchone()
+        res = db.execute(QS_DAY, (_id,)).fetchone()
         if not res:
-            suc = db.execute(
-                "INSERT INTO log (day, chore_id, counter) VALUES (date('now'),  ?, ?)",(_id, 1)
-            )
+            suc = db.execute(QS_INSERT, (_id, 1))
         else:
             cnt = res['counter']
-            # not sure why safe query construction fails
-            q = "UPDATE log SET counter=%d WHERE day=date('now')  AND  chore_id = %s" % (cnt+1, _id)
-            suc = db.execute(q)
+            suc = db.execute( QS_UPDATE % (cnt+1, _id))
         db.commit()
 
-        msg = "registerd chored {}".format(_id)
-        return(msg)
+        msg = "registered chored {}".format(_id)
+        return msg, 201
 
