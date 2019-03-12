@@ -17,7 +17,11 @@ class LoggerAPI(MethodView):
         db = _db.get_db()
         if _id:
             res = db.execute(QS_DAY, (_id,)).fetchone()
-            return jsonify({"count": res['counter']})
+            if res:
+                cnt = res["counter"]
+            else:
+                cnt = 0
+            return jsonify({"count": cnt})
 
         # render actual page
         chores = []
