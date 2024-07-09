@@ -1,12 +1,17 @@
-from flask import  render_template, jsonify
+from flask import jsonify, render_template
 from flask.views import MethodView
 
 from . import db as _db
 
-QS_DAY = "SELECT * FROM log WHERE day = date('now') and chore_id = ?"
-QS_INSERT = "INSERT INTO log (day, chore_id, counter) VALUES (date('now'),  ?, ?)"
+QS_DAY = "SELECT * FROM log WHERE day = date('now') and chore_id = ?"  # noqa: E501
+QS_INSERT = (
+    "INSERT INTO log (day, chore_id, counter) VALUES (date('now'),  ?, ?)"  # noqa: E501
+)
+
 # not sure why safe query construction fails
-QS_UPDATE = "UPDATE log SET counter=%d WHERE day=date('now')  AND  chore_id = %s"
+QS_UPDATE = (
+    "UPDATE log SET counter=%d WHERE day=date('now')  AND  chore_id = %s"  # noqa: E501
+)
 
 
 class LoggerAPI(MethodView):
@@ -25,26 +30,27 @@ class LoggerAPI(MethodView):
 
         # render actual page
         chores = []
-        res = db.execute('SELECT * FROM chores').fetchall()
+        res = db.execute("SELECT * FROM chores").fetchall()
         for item in res:
-            chores.append({
-                "id": item['chore_id'],
-                "name": item["description"],
-                "multiplier": item["multiplier"]
-            })
-        return render_template('main.html', chores=chores)
-
+            chores.append(
+                {
+                    "id": item["chore_id"],
+                    "name": item["description"],
+                    "multiplier": item["multiplier"],
+                }
+            )
+        return render_template("main.html", chores=chores)
 
     def post(self, _id):
         db = _db.get_db()
         res = db.execute(QS_DAY, (_id,)).fetchone()
         if not res:
-            suc = db.execute(QS_INSERT, (_id, 1))
+            db.execute(QS_INSERT, (_id, 1))
         else:
-            cnt = res['counter']
-            suc = db.execute( QS_UPDATE % (cnt+1, _id))
+            cnt = res["counter"]
+            db.execute(QS_UPDATE % (cnt + 1, _id))
+
         db.commit()
 
         msg = "registered chored {}".format(_id)
         return msg, 201
-

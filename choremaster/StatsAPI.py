@@ -1,22 +1,26 @@
-import datetime
 import calendar
+import datetime
 
 from flask import render_template
 from flask.views import MethodView
 
 from . import db as _db
 
-QS_MONTH = '''
+QS_MONTH = """
 SELECT * FROM log WHERE strftime('%Y', day) = ?
     AND  strftime('%m', day) = ?
     AND chore_id = ?
-    '''
+    """
 QS_CHORE = "SELECT * FROM chores WHERE chore_id = ?"
 
 
 class StatsAPI(MethodView):
 
-    def get(self, _id, year=None,):
+    def get(
+        self,
+        _id,
+        year=None,
+    ):
         if not year:
             now = datetime.datetime.now()
             year = now.year
@@ -33,11 +37,7 @@ class StatsAPI(MethodView):
             res = db.execute(QS_MONTH, (s_year, s_month, _id)).fetchall()
             payload.append(self._test_render(res, year, month, factor))
 
-        data = {
-            "year" : year,
-            "chore": chore["description"],
-            "logs": payload
-        }
+        data = {"year": year, "chore": chore["description"], "logs": payload}
         return render_template("stats.html", data=data)
 
     def _test_render(self, data, year, month, factor):
